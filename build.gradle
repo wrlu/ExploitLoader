@@ -1,0 +1,39 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+group = 'ExploitFramework'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.9.0'
+    compileOnly files('framework/framework.jar')
+}
+
+jar {
+    archiveFileName = 'ExploitLoader.jar'
+    manifest {
+        attributes 'Main-Class': 'Main'
+    }
+}
+
+task dex(type: Exec, dependsOn: ['build']) {
+    if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
+        workingDir '.'
+        commandLine 'cmd', '/c', '.\\src\\main\\script\\jar2dex.bat'
+    } else {
+        workingDir '.'
+        commandLine 'bash', './src/main/script/jar2dex.sh'
+    }
+}
